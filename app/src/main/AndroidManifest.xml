@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.android.sunshine.app">
-    //grant the permission for internet access
 
+    <!-- This permission is necessary in order for Sunshine to perform network access. -->
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -27,6 +27,8 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.android.sunshine.app.MainActivity" />
         </activity>
+        <!-- The meta-data define the MainActivity as the Parent ACTIVITY so the screen will roll back to
+         mainactivity when click "back" button. -->
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings"
@@ -35,6 +37,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.android.sunshine.app.MainActivity" />
         </activity>
+        <!-- register the weather provider class with the content authority -->
+        <provider
+            android:authorities="com.example.android.sunshine.app"
+            android:name=".data.WeatherProvider"/>
     </application>
 
 </manifest>
