@@ -13,11 +13,43 @@ public class MainActivity extends ActionBarActivity {
 
     private final String LOG_TAG = MainActivity.class.getSimpleName();
 
+    /**Add a constant for a fragment tag called FORECASTFRAGMENT_TAG.
+     * A fragment tag is a constant String  to tag a fragment within the fragment manager so it can easily look it up later.
+     * When we add the fragment, we add the parameter for the FORECASTFRAGMENT_TAG.
+     * Fragments can only be tagged during the fragment transaction.
+     * This means that the same fragment code can be reused multiple times with different tags.
+     *
+     * */
+    private final String FORECASTFRAGMENT_TAG = "FFTAG";
+
+
+//     store  current known location.
+    private String mLocation;
+
+    /*
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        mLocation = Utility.getPreferredLocation(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.container, new ForecastFragment(), FORECASTFRAGMENT_TAG)
+                            .commit();
+        }
 
+
+    }
+    */
+    protected void onCreate(Bundle savedInstanceState) {
+        mLocation = Utility.getPreferredLocation(this);
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.container, new ForecastFragment(), FORECASTFRAGMENT_TAG)
+                    .commit();
+        }
     }
 
 
@@ -74,6 +106,23 @@ public class MainActivity extends ActionBarActivity {
             startActivity(intent);
         } else {
             Log.d(LOG_TAG, "Couldn't call " + location + ", no receiving apps installed!");
+        }
+    }
+
+    //check whether the location has changed by comparing whatever is stored in the settings
+    // (ie Utility.getPreferredLocation(this);) with mLocation. If it has changed:
+    @Override
+    protected void onResume() {
+        super.onResume();
+        String location = Utility.getPreferredLocation( this );
+        // update the location in our second pane using the fragment manager
+        if (location != null && !location.equals(mLocation)) {
+            //Get the ForecastFragment using the tag FORECASTFRAGMENT_TAG by using:
+            ForecastFragment ff = (ForecastFragment)getSupportFragmentManager().findFragmentByTag(FORECASTFRAGMENT_TAG);
+            if ( null != ff ) {
+                ff.onLocationChanged();
+            }
+            mLocation = location;
         }
     }
 }

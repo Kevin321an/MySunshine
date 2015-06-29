@@ -24,9 +24,27 @@ import com.example.android.sunshine.app.data.WeatherContract;
  * A placeholder fragment containing a simple view.
  */
 public class ForecastFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+    // These indices are tied to FORECAST_COLUMNS.  If FORECAST_COLUMNS changes, these
+    // must change.
+    static final int COL_WEATHER_ID = 0;
+    static final int COL_WEATHER_DATE = 1;
+    static final int COL_WEATHER_DESC = 2;
+    /*0 = {String@831697555240} "weather._id"
+1 = {String@831697555312} "date"
+2 = {String@831697555368} "short_desc"
+3 = {String@831697555440} "max"
+4 = {String@831697555496} "min"
+5 = {String@831697555552} "location_setting"
+6 = {String@831697555632} "weather_id"
+7 = {String@831697555704} "coord_lat"
+8 = {String@831697555776} "coord_long"*/
+    static final int COL_WEATHER_MAX_TEMP = 3;
+    static final int COL_WEATHER_MIN_TEMP = 4;
+    static final int COL_LOCATION_SETTING = 5;
+    static final int COL_WEATHER_CONDITION_ID = 6;
+    static final int COL_COORD_LAT = 7;
+    static final int COL_COORD_LONG = 8;
     private static final int FORECAST_LOADER = 0; // have to be unique for every loader using in activity
-
-    private ForecastAdapter mForecastAdapter;
     // For the forecast view we're showing only a small subset of the stored data.
     // Specify the columns we need.
     private static final String[] FORECAST_COLUMNS = {
@@ -46,27 +64,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
             WeatherContract.LocationEntry.COLUMN_COORD_LAT,
             WeatherContract.LocationEntry.COLUMN_COORD_LONG
     };
-    /*0 = {String@831697555240} "weather._id"
-1 = {String@831697555312} "date"
-2 = {String@831697555368} "short_desc"
-3 = {String@831697555440} "max"
-4 = {String@831697555496} "min"
-5 = {String@831697555552} "location_setting"
-6 = {String@831697555632} "weather_id"
-7 = {String@831697555704} "coord_lat"
-8 = {String@831697555776} "coord_long"*/
-
-    // These indices are tied to FORECAST_COLUMNS.  If FORECAST_COLUMNS changes, these
-    // must change.
-    static final int COL_WEATHER_ID = 0;
-    static final int COL_WEATHER_DATE = 1;
-    static final int COL_WEATHER_DESC = 2;
-    static final int COL_WEATHER_MAX_TEMP = 3;
-    static final int COL_WEATHER_MIN_TEMP = 4;
-    static final int COL_LOCATION_SETTING = 5;
-    static final int COL_WEATHER_CONDITION_ID = 6;
-    static final int COL_COORD_LAT = 7;
-    static final int COL_COORD_LONG = 8;
+    private ForecastAdapter mForecastAdapter;
 
     public ForecastFragment() {
     }
@@ -87,11 +85,13 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         weatherTask.execute(location);
     }
 
+    /*
     @Override
     public void onStart() {
         super.onStart();
         updateWeather();
-    }
+    }*/
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -216,6 +216,13 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         super.onActivityCreated(savedInstanceState);
     }
 
+    // since it read the location when it create the loader, all it need to do is restart things
+    //it will first call updateWeather and then it will restart the loader
+    void onLocationChanged() {
+        updateWeather();
+        getLoaderManager().restartLoader(FORECAST_LOADER, null, this);
+    }
+
     //These are three loader callback function
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
@@ -228,10 +235,10 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
                 locationSetting, System.currentTimeMillis());
 
 
-        System.out.println("the columus"+ FORECAST_COLUMNS);
+        System.out.println("the columus" + FORECAST_COLUMNS);
         return new CursorLoader(getActivity(),
                 weatherForLocationUri,
-               // null,
+                // null,
                 FORECAST_COLUMNS,
                 null,
                 null,

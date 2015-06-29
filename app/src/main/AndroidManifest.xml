@@ -39,8 +39,8 @@
         </activity>
         <!-- register the weather provider class with the content authority -->
         <provider
-            android:authorities="com.example.android.sunshine.app"
-            android:name=".data.WeatherProvider"/>
+            android:name=".data.WeatherProvider"
+            android:authorities="com.example.android.sunshine.app" />
     </application>
 
 </manifest>

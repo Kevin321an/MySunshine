@@ -23,6 +23,7 @@ import com.example.android.sunshine.app.data.WeatherContract.WeatherEntry;
 /**
  * A placeholder fragment containing a simple view.
  */
+
 public class DetailActivityFragment extends Fragment implements LoaderCallbacks<Cursor> {
     private static final String LOG_TAG = DetailActivityFragment.class.getSimpleName();
 
@@ -165,10 +166,10 @@ public class DetailActivityFragment extends Fragment implements LoaderCallbacks<
 
         boolean isMetric = Utility.isMetric(getActivity());
 
-        String high = Utility.formatTemperature(
+        String high = Utility.formatTemperature(this.getActivity(),
                 data.getDouble(COL_WEATHER_MAX_TEMP), isMetric);
 
-        String low = Utility.formatTemperature(
+        String low = Utility.formatTemperature(this.getActivity(),
                 data.getDouble(COL_WEATHER_MIN_TEMP), isMetric);
 
         mForecast = String.format("%s - %s - %s/%s", dateString, weatherDescription, high, low);
