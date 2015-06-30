@@ -366,6 +366,9 @@ public class FetchWeatherTask extends AsyncTask<String, Void, Void> {
             final String FORMAT_PARAM = "mode";
             final String UNITS_PARAM = "units";
             final String DAYS_PARAM = "cnt";
+            final String ID_PARAM="id";
+            //http://api.openweathermap.org/data/2.5/forecast/daily?q=94043&mode=json&units=metric&cnt=14
+
 
             Uri builtUri = Uri.parse(FORECAST_BASE_URL).buildUpon()
                     .appendQueryParameter(QUERY_PARAM, params[0])
@@ -373,8 +376,14 @@ public class FetchWeatherTask extends AsyncTask<String, Void, Void> {
                     .appendQueryParameter(UNITS_PARAM, units)
                     .appendQueryParameter(DAYS_PARAM, Integer.toString(numDays))
                     .build();
+             /*
+            Uri builtUri = Uri.parse(FORECAST_BASE_URL).buildUpon()
+                    .appendQueryParameter(ID_PARAM, params[0])
+                    .build();*/
 
             URL url = new URL(builtUri.toString());
+            //System.out.println("builtUri"+ url);
+
 
             // Create the request to OpenWeatherMap, and open the connection
             urlConnection = (HttpURLConnection) url.openConnection();
@@ -391,6 +400,7 @@ public class FetchWeatherTask extends AsyncTask<String, Void, Void> {
             reader = new BufferedReader(new InputStreamReader(inputStream));
 
             String line;
+
             while ((line = reader.readLine()) != null) {
                 // Since it's JSON, adding a newline isn't necessary (it won't affect parsing)
                 // But it does make debugging a *lot* easier if you print out the completed
