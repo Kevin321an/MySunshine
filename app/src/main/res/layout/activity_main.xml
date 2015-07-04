@@ -1,20 +1,18 @@
-
-
-<!-- this layout(system default) will cause duplication of listView
+<!--
 <fragment xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/container"
-
-    android:name="com.example.android.sunshine.app.ForecastFragment"
+    android:id="@+id/fragment"
+    android:name="com.example.android.sunshine.app.DetailActivityFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:layout="@layout/fragment_main" />
-    -->
+    tools:layout="@layout/fragment_detail" />-->
 
+<!-- make id of the container to match in both layouts so that the logic in MainActivity is simplified.
+We know that we will always add the DetailFragment to a container named weather_detail_container in both the one and two pane layout.-->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:tools="http://schemas.android.com/tools"
-android:id="@+id/container"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-tools:context=".MainActivity"
-tools:ignore="MergeRootFrame" />
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/weather_detail_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.android.sunshine.app.DetailActivity"
+    tools:ignore="MergeRootFrame" />

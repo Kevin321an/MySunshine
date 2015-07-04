@@ -2,6 +2,7 @@ package com.example.android.sunshine.app;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
@@ -9,7 +10,6 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.ShareActionProvider;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -28,11 +28,13 @@ import com.example.android.sunshine.app.data.WeatherContract.WeatherEntry;
 
 public class DetailActivityFragment extends Fragment implements LoaderCallbacks<Cursor> {
     private static final String LOG_TAG = DetailActivityFragment.class.getSimpleName();
+    static final String DETAIL_URI = "URI";
 
     private static final String FORECAST_SHARE_HASHTAG = " #SunshineApp";
     private static final int DETAIL_LOADER = 0;
     private ShareActionProvider mShareActionProvider; //use to share the information as the way of message, facebook .etc..
     private String mForecast;
+    private Uri mUri;
     // projection for the column that will get form DB
     private static final String[] DETAIL_COLUMNS = {
             WeatherEntry.TABLE_NAME + "." + WeatherEntry._ID,
@@ -83,6 +85,14 @@ public class DetailActivityFragment extends Fragment implements LoaderCallbacks<
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
+        Bundle arguments = getArguments();//associate with arguments in detailActivity in this case
+        if (arguments != null) {
+        // Returns the value associated with the given key,
+        // or null if no mapping of the desired type exists for the given key
+        // or a null value is explicitly associated with the key.
+            mUri = arguments.getParcelable(DetailActivityFragment.DETAIL_URI);
+
+        }
 
         // The detail Activity called via intent.  Inspect the intent for forecast data.
         // Intent intent = getActivity().getIntent();
@@ -112,7 +122,16 @@ public class DetailActivityFragment extends Fragment implements LoaderCallbacks<
         mPressureView = (TextView) rootView.findViewById(R.id.detail_pressure_textview);
         return rootView;
     }
-
+    void onLocationChanged( String newLocation ) {
+        // replace the uri, since the location has changed
+        Uri uri = mUri;
+        if (null != uri) {
+            long date = WeatherContract.WeatherEntry.getDateFromUri(uri);
+            Uri updatedUri = WeatherContract.WeatherEntry.buildWeatherLocationWithDate(newLocation, date);
+            mUri = updatedUri;
+            getLoaderManager().restartLoader(DETAIL_LOADER, null, this);
+        }
+    }
     //This part added for share botton
 
     @Override
@@ -165,25 +184,43 @@ public class DetailActivityFragment extends Fragment implements LoaderCallbacks<
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+
+        /*
         Log.v(LOG_TAG, "In onCreateLoader");
         Intent intent = getActivity().getIntent();
-        if (intent == null) {
+        if (intent == null|| intent.getData() == null) {
             return null;
         }
 
         // Now create and return a CursorLoader that will take care of
         // creating a Cursor for the data being displayed.
-        return new CursorLoader(
+
+        /*return new CursorLoader(
                 getActivity(),
                 intent.getData(),
-                /*Retrieve data this intent is operating on. This URI specifies the name of the data; often it uses the content: scheme, specifying data in a content provider. Other schemes may be handled by specific activities, such as http: by the web browser.
+                /*Retrieve data this intent is operating on. This URI specifies the name of the data; often it uses the content:
+                scheme, specifying data in a content provider. Other schemes may be handled by specific activities, such as http: by the web browser.
                     Returns
-                    The URI of the data this intent is targeting or null.*/
-                DETAIL_COLUMNS,
+                    The URI of the data this intent is targeting or null.
+        DETAIL_COLUMNS,
                 null,
                 null,
                 null
-        );
+        );*/
+
+        if ( null != mUri ) {
+            // Now create and return a CursorLoader that will take care of
+            // creating a Cursor for the data being displayed.
+            return new CursorLoader(
+                    getActivity(),
+                    mUri,
+                    DETAIL_COLUMNS,
+                    null,
+                    null,
+                    null
+            );
+        }
+        return null;
     }
 
     @Override
