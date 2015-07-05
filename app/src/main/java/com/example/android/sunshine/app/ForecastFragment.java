@@ -27,6 +27,9 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     private ListView mListView;
     private int mPosition = ListView.INVALID_POSITION;
 
+    //this avariable for deciding if use today view
+    private boolean mUseTodayLayout;
+
     private static final String SELECTED_KEY = "selected_position";
     // These indices are tied to FORECAST_COLUMNS.  If FORECAST_COLUMNS changes, these
     // must change.
@@ -248,6 +251,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
             // swapout in onLoadFinished.
             mPosition = savedInstanceState.getInt(SELECTED_KEY);
         }
+        mForecastAdapter.setUseTodayLayout(mUseTodayLayout);
 
 
         return rootView;
@@ -303,11 +307,19 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         }
     }
 
-    //relese any resource
+    //release any resource
     @Override
-    public void onLoaderReset(Loader<Cursor> cursorLoader) {
+    public void onLoaderReset(Loader<Cursor> Loader) {
         mForecastAdapter.swapCursor(null);
     }
+
+    //This is designed for mainactivity
+    public void setUseTodayLayout(boolean useTodayLayout) {
+                mUseTodayLayout = useTodayLayout;
+                if (mForecastAdapter != null) {
+                        mForecastAdapter.setUseTodayLayout(mUseTodayLayout);
+                    }
+            }
 
 
 }

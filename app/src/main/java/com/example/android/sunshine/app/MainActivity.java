@@ -44,6 +44,8 @@ public class MainActivity extends ActionBarActivity implements ForecastFragment.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        getSupportActionBar().setTitle("Forcast");
+
         if (findViewById(R.id.weather_detail_container) != null) {
             // The detail container view will be present only in the large-screen layouts
             // (res/layout-sw600dp). If this view is present, then the activity should be
@@ -59,13 +61,16 @@ public class MainActivity extends ActionBarActivity implements ForecastFragment.
             }
         } else {
             mTwoPane = false;
+            //his will get rid of an unnecessary shadow below the action bar for smaller screen devices like phones.
+            // Then the action bar and Today item will appear to be on the same plane
+            // (as opposed to two different planes, where one casts a shadow on the other).
+            getSupportActionBar().setElevation(0f);
 
         }
-
-
-
+        ForecastFragment forecastFragment =  ((ForecastFragment)getSupportFragmentManager()
+                .findFragmentById(R.id.fragment_forecast));
+        forecastFragment.setUseTodayLayout(!mTwoPane);
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
