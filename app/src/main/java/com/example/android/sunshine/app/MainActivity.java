@@ -43,6 +43,7 @@ public class MainActivity extends ActionBarActivity implements ForecastFragment.
         mLocation = Utility.getPreferredLocation(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         if (findViewById(R.id.weather_detail_container) != null) {
             // The detail container view will be present only in the large-screen layouts
             // (res/layout-sw600dp). If this view is present, then the activity should be
@@ -60,6 +61,7 @@ public class MainActivity extends ActionBarActivity implements ForecastFragment.
             mTwoPane = false;
 
         }
+
 
 
     }

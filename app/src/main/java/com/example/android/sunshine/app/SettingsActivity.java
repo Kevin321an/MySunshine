@@ -11,7 +11,7 @@ import android.preference.PreferenceManager;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings.
- * <p>
+ * <p/>
  * See <a href="http://developer.android.com/design/patterns/settings.html">
  * Android Design: Settings</a> for design guidelines and the <a
  * href="http://developer.android.com/guide/topics/ui/settings.html">Settings
@@ -77,10 +77,12 @@ public class SettingsActivity extends PreferenceActivity
         }
         return true;
     }
-//added to support two pine
+
+    //get the parent activity intent for the up button behavior
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public Intent getParentActivityIntent() {
+        //if the parent activity has already exsit, it is not need to create a new one
         return super.getParentActivityIntent().addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
     }
 }

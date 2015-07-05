@@ -20,7 +20,7 @@ import android.widget.TextView;
  * from a {@link Cursor} to a {@link android.widget.ListView}.
  */
 public class ForecastAdapter extends CursorAdapter {
-    //There a two type of view
+    //here a two type of view
     private static final int VIEW_TYPE_TODAY = 0;
     private static final int VIEW_TYPE_FUTURE_DAY = 1;
     private static final int VIEW_TYPE_COUNT = 2;
@@ -71,11 +71,11 @@ public class ForecastAdapter extends CursorAdapter {
         //  Determine layoutId from viewType
         switch (viewType) {
             case VIEW_TYPE_TODAY: {
-                layoutId = R.layout.list_forecast_today;
+                layoutId = R.layout.list_item_forecast_today;
                 break;
             }
             case VIEW_TYPE_FUTURE_DAY: {
-                layoutId = R.layout.list_item_forecast_textview;
+                layoutId = R.layout.list_item_forecast;
                 break;
             }
         }
@@ -150,7 +150,7 @@ public class ForecastAdapter extends CursorAdapter {
         // Read weather forecast from cursor
         String description = cursor.getString(ForecastFragment.COL_WEATHER_DESC);
         // Find TextView and set weather forecast on it
-        TextView descriptionView = (TextView) view.findViewById(R.id.list_item_forecast_textview);
+        TextView descriptionView = (TextView) view.findViewById(R.id.list_item_forecast);
         descriptionView.setText(description);
 
         // Read user preference for metric or imperial temperature units
