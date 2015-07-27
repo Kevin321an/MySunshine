@@ -226,6 +226,8 @@ public class DetailActivityFragment extends Fragment implements LoaderCallbacks<
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
 
+
+
         /*
         * Log.v(LOG_TAG, "In onLoadFinished");
         if (!data.moveToFirst()) { return; } //if data can not move to first means there is no data
@@ -273,6 +275,8 @@ public class DetailActivityFragment extends Fragment implements LoaderCallbacks<
             // Read description from cursor and update view
             String description = data.getString(COL_WEATHER_DESC);
             mDescriptionView.setText(description);
+// For accessibility, add a content description to the icon field
+            mIconView.setContentDescription(description);
 
             // Read high temperature from cursor and update view
             boolean isMetric = Utility.isMetric(getActivity());

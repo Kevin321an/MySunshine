@@ -44,6 +44,7 @@ public class MainActivity extends ActionBarActivity implements ForecastFragment.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+//bar text
         getSupportActionBar().setTitle("Forcast");
 
         if (findViewById(R.id.weather_detail_container) != null) {

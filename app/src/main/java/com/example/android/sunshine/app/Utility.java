@@ -138,6 +138,7 @@ public class Utility {
         int windFormat;
         if (Utility.isMetric(context)) {
             windFormat = R.string.format_wind_kmh;
+
         } else {
             windFormat = R.string.format_wind_mph;
             windSpeed = .621371192237334f * windSpeed;

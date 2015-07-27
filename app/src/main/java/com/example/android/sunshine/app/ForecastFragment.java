@@ -1,5 +1,9 @@
 package com.example.android.sunshine.app;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,6 +21,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.example.android.sunshine.app.data.WeatherContract;
+import com.example.android.sunshine.app.service.SunshineService;
 
 
 /**
@@ -92,7 +97,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
     private void updateWeather() {
 
-//        remove this line to expand FetchWeatherTask to another class file
+//        remove these line to expand FetchWeatherTask to another class file
         //FetchWeatherTask weatherTask = new FetchWeatherTask();
         //FetchWeatherTask weatherTask = new FetchWeatherTask(getActivity(), mForecastAdapter);
         //weatherTask.execute("94043");
@@ -101,9 +106,36 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         //String location = prefs.getString(getString(R.string.pref_location_key),
         //       getString(R.string.pref_location_default));
 
+        //fetch data by using FetchWeatherTask
+        /*
         FetchWeatherTask weatherTask = new FetchWeatherTask(getActivity());
         String location = Utility.getPreferredLocation(getActivity());
         weatherTask.execute(location);
+        */
+
+        //fetch data by using service
+        /*
+        Intent intent = new Intent(getActivity(), SunshineService.class);
+        intent.putExtra(SunshineService.LOCATION_QUERY_EXTRA,
+                Utility.getPreferredLocation(getActivity()));
+        getActivity().startService(intent);
+        */
+        //fetch data by using Pending Intent
+        Intent alarmIntent = new Intent(getActivity(), SunshineService.AlarmReceiver.class);
+        alarmIntent.putExtra(SunshineService.LOCATION_QUERY_EXTRA, Utility.getPreferredLocation(getActivity()));
+
+        //Wrap in a pending intent which only fires once.
+        //Parameters:
+        //context	The Context in which this PendingIntent should perform the broadcast.
+        //requestCode	Private request code for the sender
+        //intent	The Intent to be broadcast.
+        //flags
+        PendingIntent pi = PendingIntent.getBroadcast(getActivity(), 0,alarmIntent,PendingIntent.FLAG_ONE_SHOT);//getBroadcast(context, 0, i, 0);
+
+        AlarmManager am=(AlarmManager)getActivity().getSystemService(Context.ALARM_SERVICE);
+
+        //Set the AlarmManager to wake up the system.
+        am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5000, pi);
     }
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -242,10 +274,6 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         });
 
         // If there's instance state, mine it for useful information.
-        // The end-goal here is that the user never knows that turning their device sideways
-        // does crazy lifecycle related things.  It should feel like some stuff stretched out,
-        // or magically appeared to take advantage of room, but data or place in the app was never
-        // actually *lost*.
         if (savedInstanceState != null && savedInstanceState.containsKey(SELECTED_KEY)) {
             // The listview probably hasn't even been populated yet.  Actually perform the
             // swapout in onLoadFinished.

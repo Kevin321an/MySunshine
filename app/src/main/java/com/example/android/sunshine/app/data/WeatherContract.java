@@ -41,6 +41,7 @@ public class WeatherContract {
     /* Inner class that defines the table contents of the location table */
     public static final class LocationEntry implements BaseColumns {
 
+        //content://com.example.android.sunshine.app/location
         public static final Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath(PATH_LOCATION).build();
 

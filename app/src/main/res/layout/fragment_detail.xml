@@ -98,11 +98,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:layout_width="match_parent"
+                android:text="test"
                 android:textAppearance="?android:textAppearanceLarge" />
 
             <TextView
                 android:id="@+id/detail_wind_textview"
                 android:layout_height="wrap_content"
+                android:text="test"
                 android:layout_marginTop="4dp"
                 android:layout_width="match_parent"
                 android:textAppearance="?android:textAppearanceLarge" />
