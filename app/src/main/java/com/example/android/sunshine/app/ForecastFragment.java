@@ -1,9 +1,5 @@
 package com.example.android.sunshine.app;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -21,7 +17,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.example.android.sunshine.app.data.WeatherContract;
-import com.example.android.sunshine.app.service.SunshineService;
+import com.example.android.sunshine.app.sync.SunshineSyncAdapter;
 
 
 /**
@@ -120,6 +116,8 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
                 Utility.getPreferredLocation(getActivity()));
         getActivity().startService(intent);
         */
+
+        /*
         //fetch data by using Pending Intent
         Intent alarmIntent = new Intent(getActivity(), SunshineService.AlarmReceiver.class);
         alarmIntent.putExtra(SunshineService.LOCATION_QUERY_EXTRA, Utility.getPreferredLocation(getActivity()));
@@ -136,6 +134,8 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
         //Set the AlarmManager to wake up the system.
         am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5000, pi);
+        */
+        SunshineSyncAdapter.syncImmediately(getActivity());
     }
     @Override
     public void onSaveInstanceState(Bundle outState) {
