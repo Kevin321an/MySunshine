@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.android.sunshine.app.data.WeatherContract;
 import com.example.android.sunshine.app.sync.SunshineSyncAdapter;
@@ -221,6 +222,9 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         // Get a reference to the ListView, and attach this adapter to it.
         mListView = (ListView) rootView.findViewById(R.id.listview_forecast);
         mListView.setAdapter(mForecastAdapter); //shoot the ArrayAdapter on to Screen
+        //empty the empty view
+        View emptyView = rootView.findViewById(R.id.listview_forecast_empty);
+        mListView.setEmptyView(emptyView);
 
 
         /* replace by cursorAdapter
@@ -321,6 +325,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
             // If we don't need to restart the loader, and there's a desired position to restore
             // to, do so now.
             mListView.smoothScrollToPosition(mPosition);
+            updateEmptyView();
         }
     }
 
@@ -374,5 +379,24 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
         }
     }
+
+     /*
+        Updates the empty list view with contextually relevant information that the user can
+        use to determine why they aren't seeing weather.
+     */
+        private void updateEmptyView() {
+                if ( mForecastAdapter.getCount() == 0 ) {
+                       TextView tv = (TextView) getView().findViewById(R.id.listview_forecast_empty);
+                        if ( null != tv ) {
+                                // if cursor is empty, why? do we have an invalid location
+                                        int message = R.string.empty_forecast_list;
+                            
+                                if (!Utility.isNetworkAvailable(getActivity()) ) {
+                                        message = R.string.empty_forecast_list_no_network;
+                                    }
+                                tv.setText(message);
+                            }
+                    }
+            }
 }
 
