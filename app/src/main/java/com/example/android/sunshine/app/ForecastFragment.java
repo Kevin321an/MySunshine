@@ -1,9 +1,11 @@
 package com.example.android.sunshine.app;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -26,7 +28,7 @@ import com.example.android.sunshine.app.sync.SunshineSyncAdapter;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class ForecastFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class ForecastFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, SharedPreferences.OnSharedPreferenceChangeListener {
     public static final String LOG_TAG = ForecastFragment.class.getSimpleName();
     // These indices are tied to FORECAST_COLUMNS.  If FORECAST_COLUMNS changes, these
     // must change.
@@ -72,10 +74,11 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     private ForecastAdapter mForecastAdapter;
     private ListView mListView;
 
-//    callback method implement for two pane
+    //    callback method implement for two pane
     private int mPosition = ListView.INVALID_POSITION;
     //this avariable for deciding if use today view
     private boolean mUseTodayLayout;
+
     public ForecastFragment() {
     }
 
@@ -144,6 +147,33 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         setHasOptionsMenu(true);
     }
 
+    @Override
+    public void onResume() {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        sp.registerOnSharedPreferenceChangeListener(this);
+        super.onResume();
+    }
+
+
+    @Override
+    public void onPause() {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        sp.unregisterOnSharedPreferenceChangeListener(this);
+        super.onPause();
+    }
+
+
+    /**
+     * @param sharedPreferences The SharedPreferences that received the change.
+     * @param key               The key of the preference that was changed, added, or removed.
+     */
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key.equals(getString(R.string.pref_location_status_key))) {
+            updateEmptyView();
+        }
+    }
+
     /*
     @Override
     public void onStart() {
@@ -164,8 +194,8 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         int id = item.getItemId();
         //if (id == R.id.action_refresh) {
         //    updateWeather();
-         //   return true;
-       // }
+        //   return true;
+        // }
         if (id == R.id.action_map) {
             openPreferredLocationInMap();
             return true;
@@ -343,17 +373,6 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         }
     }
 
-    /**
-     * A callback interface that all activities containing this fragment must
-     * implement. This mechanism allows activities to be notified of item
-     * selections.
-     */
-    public interface Callback {
-        /**
-         * DetailFragmentCallback for when an item has been selected.
-         */
-        void onItemSelected(Uri dateUri);
-    }
     //show city in the Google map
     private void openPreferredLocationInMap() {
         // Using the URI scheme for showing a location found on a map.  This super-handy
@@ -380,23 +399,47 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         }
     }
 
-     /*
-        Updates the empty list view with contextually relevant information that the user can
-        use to determine why they aren't seeing weather.
-     */
-        private void updateEmptyView() {
-                if ( mForecastAdapter.getCount() == 0 ) {
-                       TextView tv = (TextView) getView().findViewById(R.id.listview_forecast_empty);
-                        if ( null != tv ) {
-                                // if cursor is empty, why? do we have an invalid location
-                                        int message = R.string.empty_forecast_list;
-                            
-                                if (!Utility.isNetworkAvailable(getActivity()) ) {
-                                        message = R.string.empty_forecast_list_no_network;
-                                    }
-                                tv.setText(message);
-                            }
-                    }
+    /*
+       Updates the empty list view with contextually relevant information that the user can
+       use to determine why they aren't seeing weather.
+    */
+    private void updateEmptyView() {
+        if (mForecastAdapter.getCount() == 0) {
+            TextView tv = (TextView) getView().findViewById(R.id.listview_forecast_empty);
+            if (null != tv) {
+                // if cursor is empty, why? do we have an invalid location
+                int message = R.string.empty_forecast_list;
+                @SunshineSyncAdapter.LocationStatus int location = Utility.getLocationStatus(getActivity());
+                switch (location) {
+                    case SunshineSyncAdapter.LOCATION_STATUS_SERVER_DOWN:
+                        message = R.string.empty_forecast_list_server_down;
+                        break;
+                    case SunshineSyncAdapter.LOCATION_STATUS_SERVER_INVALID:
+                        message = R.string.empty_forecast_list_server_error;
+                        break;
+                    case SunshineSyncAdapter.LOCATION_STATUS_INVALID:
+                        message = R.string.empty_forecast_list_invalid_location;
+                        break;
+                    default:
+                        if (!Utility.isNetworkAvailable(getActivity())) {
+                            message = R.string.empty_forecast_list_no_network;
+                        }
+                }
+                tv.setText(message);
             }
+        }
+    }
+
+    /**
+     * A callback interface that all activities containing this fragment must
+     * implement. This mechanism allows activities to be notified of item
+     * selections.
+     */
+    public interface Callback {
+        /**
+         * DetailFragmentCallback for when an item has been selected.
+         */
+        void onItemSelected(Uri dateUri);
+    }
 }
 
