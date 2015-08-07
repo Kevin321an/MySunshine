@@ -278,7 +278,7 @@ public class Utility {
     }
 
     /**
-     * Resets the location status.  (Sets it to SunshineSyncAdapter.LOCATION_STATUS_UNKNOWN)     *
+     * Resets the location status.  (Sets it to SunshineSyncAdapter.LOCATION_STATUS_UNKNOWN)
      * @param c Context used to get the SharedPreferences
      */
     static public void resetLocationStatus(Context c) {
