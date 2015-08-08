@@ -96,6 +96,7 @@
     <string name="empty_forecast_list_invalid_location">No weather information available. The location in settings is not recognized by the weather server.</string>
 
     <!--Summary of status of location in Setting-->
+    <!--<xliff:g id="location_setting">%1$s</xliff:g> this is place holder tag means it cannot be translated-->
     <string name="pref_location_error_description">Invalid Location (<xliff:g id="location_setting">%1$s</xliff:g>)"</string>
     <string name="pref_location_unknown_description">Validating Location... (<xliff:g id="location_setting">%1$s</xliff:g>)"</string>
 
