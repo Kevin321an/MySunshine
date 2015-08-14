@@ -8,7 +8,8 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,7 +22,7 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 import java.io.IOException;
 
 
-public class MainActivity extends ActionBarActivity implements ForecastFragment.Callback {
+public class MainActivity extends AppCompatActivity implements ForecastFragment.Callback {
 
     /**
      * Add a constant for a fragment tag called FORECASTFRAGMENT_TAG.
@@ -61,8 +62,12 @@ public class MainActivity extends ActionBarActivity implements ForecastFragment.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//bar text
-        getSupportActionBar().setTitle("Forcast");
+        //Change from tool bar to action bar
+        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
 
         if (findViewById(R.id.weather_detail_container) != null) {
             // The detail container view will be present only in the large-screen layouts
@@ -91,26 +96,26 @@ public class MainActivity extends ActionBarActivity implements ForecastFragment.
 
         SunshineSyncAdapter.initializeSyncAdapter(this); //initialize the Sync adapter
 
-        if (checkPlayServices()) {
+       /* if (checkPlayServices()) {
             //Todo: ask user to install lastest version of Google Play Service
             mGcm = GoogleCloudMessaging.getInstance(this);
             String regId = getRegistrationId(this);
             Log.d("GCM", regId);
 
-            /*if (PROJECT_NUMBER.equals("618015748787")) {
+            *//*if (PROJECT_NUMBER.equals("618015748787")) {
                 new AlertDialog.Builder(this)
                         .setTitle("Needs Project Number")
                         .setMessage("GCM will not function in Sunshine until you set the Project Number to the one from the Google Developers Console.")
                         .setPositiveButton(android.R.string.ok, null)
                         .create().show();
-            } else*/ if (regId.isEmpty()) {
+            } else*//* if (regId.isEmpty()) {
                 registerInBackground(this);
             }
         } else {
             Log.i(LOG_TAG, "No valid Google Play Services APK. Weather alerts will be disabled.");
             // Store regID as null
             storeRegistrationId(this, null);
-        }
+        }*/
 
 
 
@@ -148,11 +153,11 @@ public class MainActivity extends ActionBarActivity implements ForecastFragment.
     @Override
     protected void onResume() {
         super.onResume();
-        if (!checkPlayServices()) {
+        /*if (!checkPlayServices()) {
             //Todo: If Google Play Services is not available, GCM weather alerts wont available
             // Store regID as null
 
-        }
+        }*/
         String location = Utility.getPreferredLocation(this);
 //        telling the DetailFragment to restart its’ loader if the location changed.
         // update the location in our second pane using the fragment manager
@@ -202,7 +207,9 @@ public class MainActivity extends ActionBarActivity implements ForecastFragment.
      * the Google Play Store or enable it in the device's system settings.
      */
     private boolean checkPlayServices() {
+        try{
         int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+
         if (resultCode != ConnectionResult.SUCCESS) {
             if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
                 GooglePlayServicesUtil.getErrorDialog(resultCode, this,
@@ -211,6 +218,12 @@ public class MainActivity extends ActionBarActivity implements ForecastFragment.
                 Log.i(LOG_TAG, "This device is not supported.");
                 finish();
             }
+            return false;
+        }
+
+        }
+        catch (Exception e ){
+            Log.d(LOG_TAG, "GCM is not available");
             return false;
         }
         return true;
