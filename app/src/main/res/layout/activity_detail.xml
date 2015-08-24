@@ -1,3 +1,4 @@
+<!--
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -17,4 +18,11 @@
         android:layout_height="match_parent"
         tools:context="com.example.android.sunshine.app.DetailActivity"
         tools:ignore="MergeRootFrame" />
-</LinearLayout>
+</LinearLayout>-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/weather_detail_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.android.sunshine.app.DetailActivity"
+    tools:ignore="MergeRootFrame" />
