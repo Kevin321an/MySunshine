@@ -316,10 +316,10 @@ public class DetailActivityFragment extends Fragment implements LoaderCallbacks<
             // We still need this for the share intent
             mForecast = String.format("%s - %s - %s/%s", dateText, description, high, low);
 
-            /*// If onCreateOptionsMenu has already happened, we need to update the share intent now.
+            // If onCreateOptionsMenu has already happened, we need to update the share intent now.
             if (mShareActionProvider != null) {
                 mShareActionProvider.setShareIntent(createShareForecastIntent());
-            }*/
+            }
         }
 
 
