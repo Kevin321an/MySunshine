@@ -1,0 +1,6 @@
+<resources>
+
+   <!-- Extra Padding -->
+     <dimen name="detail_view_extra_padding">0dp</dimen>
+</resources>
+

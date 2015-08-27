@@ -8,7 +8,7 @@
     tools:layout="@layout/fragment_detail" />-->
 
 <!-- make id of the container to match in both layouts so that the logic in MainActivity is simplified.
-We know that we will always add the DetailFragment to a container named weather_detail_container in both the one and two pane layout.-->
+add the DetailFragment to a container named weather_detail_container in both the one and two pane layout.-->
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"

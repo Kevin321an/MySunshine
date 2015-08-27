@@ -87,7 +87,7 @@ public class DetailActivityFragment extends Fragment implements LoaderCallbacks<
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_detail_alternative, container, false);
         Bundle arguments = getArguments();//associate with arguments in detailActivity in this case
         if (arguments != null) {
         // Returns the value associated with the given key,
@@ -216,6 +216,7 @@ public class DetailActivityFragment extends Fragment implements LoaderCallbacks<
                     null
             );
         }
+        getView().setVisibility(View.INVISIBLE);
         return null;
     }
 
@@ -256,6 +257,7 @@ public class DetailActivityFragment extends Fragment implements LoaderCallbacks<
         *
         * */
         if (data != null && data.moveToFirst()) {
+            getView().setVisibility(View.VISIBLE);
             // Read weather condition ID from cursor
             int weatherId = data.getInt(COL_WEATHER_CONDITION_ID);
             // Use weather art image
@@ -316,10 +318,7 @@ public class DetailActivityFragment extends Fragment implements LoaderCallbacks<
             // We still need this for the share intent
             mForecast = String.format("%s - %s - %s/%s", dateText, description, high, low);
 
-            // If onCreateOptionsMenu has already happened, we need to update the share intent now.
-            if (mShareActionProvider != null) {
-                mShareActionProvider.setShareIntent(createShareForecastIntent());
-            }
+
         }
 
 
