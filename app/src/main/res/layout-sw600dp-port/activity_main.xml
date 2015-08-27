@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -25,9 +26,9 @@
         android:background="@color/primary"
         android:contentDescription="@string/app_name"/>
 
-    <!-- This view is used to provide the area that is overlapped
+     <!--This view is used to provide the area that is overlapped
          as well as the anchor point that the weather detail will
-         use to overlap the "appbar" -->
+         use to overlap the "appbar"-->
     <View
         android:elevation="@dimen/appbar_elevation"
         android:background="@color/primary"
@@ -35,14 +36,15 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/details_app_bar_overlap" />
 
-    <FrameLayout
+    <android.support.v7.widget.CardView
         android:id="@+id/weather_detail_container"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:elevation="@dimen/appbar_elevation"
+        app:cardElevation="@dimen/detail_card_elevation"
         android:layout_below="@id/sunshine_logo_imageview"
-        android:paddingLeft="@dimen/abc_list_item_padding_horizontal_material"
-        android:paddingRight="@dimen/abc_list_item_padding_horizontal_material"
+        android:layout_marginLeft="@dimen/abc_list_item_padding_horizontal_material"
+        android:layout_marginRight="@dimen/abc_list_item_padding_horizontal_material"
+        app:cardPreventCornerOverlap="false"
         />
 
     <fragment
@@ -52,5 +54,6 @@
         android:layout_width="match_parent"
         android:layout_below="@id/weather_detail_container"
         tools:layout="@android:layout/list_content"
+        android:choiceMode="singleChoice"
         />
 </RelativeLayout>

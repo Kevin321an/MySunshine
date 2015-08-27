@@ -216,7 +216,13 @@ public class DetailActivityFragment extends Fragment implements LoaderCallbacks<
                     null
             );
         }
-        getView().setVisibility(View.INVISIBLE);
+
+        //provide the area to overlap and the anchor point for detail cardView
+        //this view is in 600dp -port
+        /*ViewParent vp = getView().getParent();
+        if ( vp instanceof CardView ) {
+            ((View)vp).setVisibility(View.INVISIBLE);
+        }*/
         return null;
     }
 
@@ -257,7 +263,10 @@ public class DetailActivityFragment extends Fragment implements LoaderCallbacks<
         *
         * */
         if (data != null && data.moveToFirst()) {
-            getView().setVisibility(View.VISIBLE);
+            /*ViewParent vp = getView().getParent();
+            if ( vp instanceof CardView) {
+
+            }*/
             // Read weather condition ID from cursor
             int weatherId = data.getInt(COL_WEATHER_CONDITION_ID);
             // Use weather art image
