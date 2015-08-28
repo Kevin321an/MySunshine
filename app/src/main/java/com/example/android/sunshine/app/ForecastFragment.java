@@ -19,7 +19,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.android.sunshine.app.data.WeatherContract;
@@ -137,9 +136,9 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public void onSaveInstanceState(Bundle outState) {
         // When tablets rotate, the currently selected list item needs to be saved.
-        // When no item is selected, mPosition will be set to RecyclerView.INVALID_POSITION,
+        // When no item is selected, mPosition will be set to RecyclerView.NO_POSITION,
         // so check for that before storing.
-        if (mPosition != ListView.INVALID_POSITION) {
+        if (mPosition != RecyclerView.NO_POSITION) {
             outState.putInt(SELECTED_KEY, mPosition);
         }
         super.onSaveInstanceState(outState);
@@ -250,20 +249,31 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         // up with an empty list the first time we run.
         mForecastAdapter = new ForecastAdapter(getActivity(), cur, 0);
         */
+        //empty the empty view
+        View emptyView = rootView.findViewById(R.id.recyclerview_forecast_empty);
 
-        // The ForecastAdapter will take data from a source and
-        // use it to populate the RecyclerView  it's attached to.
-        mForecastAdapter = new ForecastAdapter(getActivity());
         // Get a reference to the RecyclerView, and attach this adapter to it.
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerview_forecast);
         //RecycleView will not display without layoutManger
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        //empty the empty view
-        View emptyView = rootView.findViewById(R.id.recyclerview_forecast_empty);
+        // use this setting to improve performance if you know that changes in content do not change the layout size of the RecyclerView
+        mRecyclerView.setHasFixedSize(true);
+
         // Set the layout manager
         mRecyclerView.setAdapter(mForecastAdapter); //shoot the ArrayAdapter on to Screen
 
-
+        // The ForecastAdapter will take data from a source and use it to populate the RecyclerView  it's attached to.
+        mForecastAdapter = new ForecastAdapter(getActivity(), new ForecastAdapter.ForecastAdapterOnClickHandler() {
+            @Override
+            public void onClick(Long date, ForecastAdapter.ForecastAdapterViewHolder vh) {
+                String locationSetting = Utility.getPreferredLocation(getActivity());
+                ((Callback) getActivity())
+                        .onItemSelected(WeatherContract.WeatherEntry.buildWeatherLocationWithDate(
+                                        locationSetting, date)//return the Uri on selected item
+                        );
+                mPosition = vh.getAdapterPosition();
+            }
+        }, emptyView);
 
 
         /* replace by cursorAdapter
@@ -284,7 +294,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         */
 
 
-        // call our MainActivity
+        // call our MainActivity replaced by recycleView
      /*   mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             mRecyclerView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

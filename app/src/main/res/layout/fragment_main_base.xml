@@ -9,7 +9,7 @@ tools:context="com.example.android.sunshine.app.ForecastFragment">
     android:id="@+id/recyclerview_forecast"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:divider="@null" />
+     />
 <!-- empty list -->
 <TextView
     android:id="@+id/recyclerview_forecast_empty"
