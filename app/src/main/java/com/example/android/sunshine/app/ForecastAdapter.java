@@ -3,6 +3,7 @@ package com.example.android.sunshine.app;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,7 +42,7 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
     }
 
     public static interface ForecastAdapterOnClickHandler {
-        void onClick(Long date, ForecastAdapterViewHolder vh);} ///????
+        void onClick(Long date, ForecastAdapterViewHolder vh);}
     public ForecastAdapter(Context context, ForecastAdapterOnClickHandler dh, View emptyView, int choiceMode) {
         mContext = context;
         mClickHandler = dh;
@@ -81,7 +82,7 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
             mCursor.moveToPosition(adapterPosition);
             //get the index of this column
             int dateColumnIndex = mCursor.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_DATE);
-            //Important This going to send the date into mClickHandler then it will be deliver to constructor
+            //!!!!!Important This going to send the date into mClickHandler then it will be deliver to constructor
             mClickHandler.onClick(mCursor.getLong(dateColumnIndex), this);
             mICM.onClick(this);
         }
@@ -258,6 +259,10 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
                     .into(forecastAdapterViewHolder.mIconView);
         }
 
+        // this enables better animations. even if it lose state due to a device rotation,
+        // the animator can use this to re-find the original view
+        ViewCompat.setTransitionName(forecastAdapterViewHolder.mIconView, "iconView" + position);
+
         // Read date from cursor
         long dateInMillis = mCursor.getLong(ForecastFragment.COL_WEATHER_DATE);
         // Find TextView and set formatted date on it
@@ -283,9 +288,11 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
         forecastAdapterViewHolder.mLowTempView.setContentDescription(mContext.getString(R.string.a11y_low_temp, lowString));
         mICM.onBindViewHolder(forecastAdapterViewHolder, position);
     }
+
     public void onRestoreInstanceState(Bundle savedInstanceState) {
         mICM.onRestoreInstanceState(savedInstanceState);
     }
+
     public void onSaveInstanceState(Bundle outState) {
         mICM.onSaveInstanceState(outState);
     }

@@ -1,11 +1,13 @@
 package com.example.android.sunshine.app;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -87,7 +89,8 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     private int mPosition = RecyclerView.NO_POSITION;;
     //this avariable for deciding if use today view
     private boolean mUseTodayLayout,mAutoSelectView;
-    private int mChoiceMode;
+    private int mChoiceMode;// multiple choice animation in Twopane mode
+    private boolean mHoldForTransition;
     public ForecastFragment() {
     }
 
@@ -150,6 +153,8 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         super.onSaveInstanceState(outState);
     }
 
+
+    //this Called when a fragment is being created as part of a view layout inflation, typically from setting the content view of an activity.
     @Override
     public void onInflate(Activity activity, AttributeSet attrs, Bundle savedInstanceState) {
         super.onInflate(activity, attrs, savedInstanceState);
@@ -157,6 +162,9 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
                 0, 0);
         mChoiceMode = a.getInt(R.styleable.ForecastFragment_android_choiceMode, AbsListView.CHOICE_MODE_NONE);
         mAutoSelectView = a.getBoolean(R.styleable.ForecastFragment_autoSelectView, false);
+        //Retrieve a boolean value from the preferences. return false if this preference does not exist
+
+        mHoldForTransition = a.getBoolean(R.styleable.ForecastFragment_sharedElementTransitions, false);
         a.recycle();
     }
 
@@ -280,9 +288,10 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
             @Override
             public void onClick(Long date, ForecastAdapter.ForecastAdapterViewHolder vh) {
                 String locationSetting = Utility.getPreferredLocation(getActivity());
-                ((Callback) getActivity())
+                ((Callback) getActivity()) //return the Uri on selected item to Mainactivity
+                        //vh return the recycle view position
                         .onItemSelected(WeatherContract.WeatherEntry.buildWeatherLocationWithDate(
-                                        locationSetting, date)//return the Uri on selected item
+                                locationSetting, date), vh
                         );
                 mPosition = vh.getAdapterPosition();
             }
@@ -290,6 +299,28 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
         // Set the layout manager
         mRecyclerView.setAdapter(mForecastAdapter); //shoot the ArrayAdapter on to Screen
+        /**
+         * Implement Parallax Scrolling in landscape view of phone
+         */
+        final View parallaxView = rootView.findViewById(R.id.parallax_bar);
+        if (null != parallaxView) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+                    @Override
+                    public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                        super.onScrolled(recyclerView, dx, dy);
+                        int max = parallaxView.getHeight();
+                        //positive means going up and negative means going down
+                        if (dy > 0) { //going up
+                            parallaxView.setTranslationY(Math.max(-max, parallaxView.getTranslationY() - dy / 2));
+                        } else {//going down
+                            parallaxView.setTranslationY(Math.min(0, parallaxView.getTranslationY() - dy / 2));
+                        }
+                    }
+                });
+            }
+        }
 
         /* replace by cursorAdapter
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -348,9 +379,23 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
         return rootView;
     }
+    //clean the Parallax Scrolling listeners
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (null != mRecyclerView) {
+            mRecyclerView.clearOnScrollListeners();
+        }
+    }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
+        // hold for transition here just in-case the activity
+        // needs to be re-created. In a standard return transition,
+        // this doesn't actually make a difference.
+        if ( mHoldForTransition ) {
+            getActivity().supportPostponeEnterTransition();
+        }
         getLoaderManager().initLoader(FORECAST_LOADER, null, this);
         super.onActivityCreated(savedInstanceState);
     }
@@ -397,7 +442,8 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
             mRecyclerView.smoothScrollToPosition(mPosition);
         }
         updateEmptyView();
-        if ( data.getCount() > 0 ) {
+        if ( data.getCount() == 0 ) {
+            getActivity().supportStartPostponedEnterTransition();}else{
             mRecyclerView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
                 @Override
                 public boolean onPreDraw() {
@@ -411,6 +457,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
                         if ( null != vh && mAutoSelectView ) {
                             mForecastAdapter.selectView( vh );
                         }
+                        if ( mHoldForTransition )  getActivity().supportStartPostponedEnterTransition();
                         return true;
                     }
                     return false;
@@ -500,7 +547,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         /**
          * DetailFragmentCallback for when an item has been selected.
          */
-        void onItemSelected(Uri dateUri);
+        void onItemSelected(Uri dateUri,ForecastAdapter.ForecastAdapterViewHolder vh);
     }
 }
 

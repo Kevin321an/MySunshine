@@ -11,6 +11,9 @@
     <!-- Settings activity theme. -->
     <style name="SettingsTheme" parent="AppTheme">
     </style>
+<!--both derive from AppTheme, this just keep this there to keep v21 out of the old stuff  -->
+    <style name="AppTheme.Main" parent="@style/AppTheme"/>
+    <style name="AppTheme.Details" parent="@style/AppTheme"/>
     <!-- Main activity theme. -->
    <!-- <style name="ForecastTheme" parent="AppTheme">
     <item name="actionBarStyle">@style/ActionBar.Solid.Sunshine.NoTitle</item>

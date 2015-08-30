@@ -25,12 +25,16 @@ public class DetailActivity extends AppCompatActivity {
             // replacing any existing value for the given key. Either key or value may be null.
             //getIntent().getData() is Bundle[{URI=content://com.example.android.sunshine.app/weather/94043/1436241600000}] in this case
             arguments.putParcelable(DetailActivityFragment.DETAIL_URI, getIntent().getData());
+            arguments.putBoolean(DetailActivityFragment.DETAIL_TRANSITION_ANIMATION, true);
             DetailActivityFragment fragment = new DetailActivityFragment();
             //Supply the construction arguments for this fragment.
             fragment.setArguments(arguments);//mArguments=Bundle[{URI=content://com.example.android.sunshine.app/weather/94043/1436241600000}]
             getSupportFragmentManager().beginTransaction()//Start a series of edit operations on the Fragments associated with this FragmentManager.
                     .add(R.id.weather_detail_container, fragment)
                     .commit();
+            // Being here means we are in animation mode
+            //refresh the status to let the animation alive
+            supportPostponeEnterTransition();
         }
     }
 }

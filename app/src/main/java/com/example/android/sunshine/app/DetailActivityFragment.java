@@ -31,12 +31,14 @@ import com.example.android.sunshine.app.data.WeatherContract.WeatherEntry;
 public class DetailActivityFragment extends Fragment implements LoaderCallbacks<Cursor> {
     private static final String LOG_TAG = DetailActivityFragment.class.getSimpleName();
     static final String DETAIL_URI = "URI";
-
+    static final String DETAIL_TRANSITION_ANIMATION = "DTA";
     private static final String FORECAST_SHARE_HASHTAG = " #SunshineApp";
     private static final int DETAIL_LOADER = 0;
     private ShareActionProvider mShareActionProvider; //use to share the information as the way of message, facebook .etc..
     private String mForecast;
     private Uri mUri;
+    //this flag only true if it go through Detail activity. While the twopane mode wont do this.
+    private boolean mTransitionAnimation;
     // projection for the column that will get form DB
     private static final String[] DETAIL_COLUMNS = {
             WeatherEntry.TABLE_NAME + "." + WeatherEntry._ID,
@@ -94,6 +96,7 @@ public class DetailActivityFragment extends Fragment implements LoaderCallbacks<
         // or null if no mapping of the desired type exists for the given key
         // or a null value is explicitly associated with the key.
             mUri = arguments.getParcelable(DetailActivityFragment.DETAIL_URI);
+            mTransitionAnimation = arguments.getBoolean(DetailActivityFragment.DETAIL_TRANSITION_ANIMATION, false);
 
         }
 
@@ -335,7 +338,7 @@ public class DetailActivityFragment extends Fragment implements LoaderCallbacks<
         Toolbar toolbarView = (Toolbar) getView().findViewById(R.id.toolbar);
 
         // It needs to start the enter transition after the data has loaded
-        if (activity instanceof DetailActivity) {
+        if ( mTransitionAnimation ) {
             activity.supportStartPostponedEnterTransition();
 
             if ( null != toolbarView ) {
