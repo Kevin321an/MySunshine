@@ -1,0 +1,3 @@
+<!--give different dimension here because in lower android version the widget has already given the margin itself -->
+
+<resources><dimen name="widget_margin">0dp</dimen></resources>
