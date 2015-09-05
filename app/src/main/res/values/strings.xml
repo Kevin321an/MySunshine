@@ -196,4 +196,7 @@
 
     <!-- Strings related to Widgets -->
     <string name="title_widget_today">Sunshine Today</string>
+
+    <!-- Strings related to Muzei Source -->
+    <string name="muzei_description">Today\'s weather</string>
 </resources>
