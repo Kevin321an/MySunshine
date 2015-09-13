@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding" defaultCharsetForPropertiesFiles="UTF-8">
+    <file url="file://$PROJECT_DIR$/app/src/main/res/drawable/touch_selector_white.xml" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/layout/activity_detail.xml" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/layout/detail_extras_grid.xml" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/layout/detail_today_grid.xml" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/layout/fragment_detail.xml" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/values-land/refs.xml" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/values-sw600dp/refs.xml" charset="GBK" />
+    <file url="PROJECT" charset="UTF-8" />
+  </component>
+</project>
